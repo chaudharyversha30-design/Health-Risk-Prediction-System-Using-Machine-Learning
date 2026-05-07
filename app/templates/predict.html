@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Predict Health Risk</h1>
+  <p class="subtitle">Enter patient details below to generate a model prediction.</p>
+
+  {% if error %}
+  <div class="alert error">{{ error }}</div>
+  {% endif %}
+
+  {% set data = form_data or {} %}
+  <form method="post" action="{{ url_for('predict') }}" class="grid">
+    <label>Age
+      <input type="number" name="age" min="1" max="120" required value="{{ data.get('age', '') }}">
+    </label>
+
+    <label>Sex
+      <select name="sex" required>
+        <option value="">Select</option>
+        <option value="1" {% if data.get('sex')|string == '1' %}selected{% endif %}>Male</option>
+        <option value="0" {% if data.get('sex')|string == '0' %}selected{% endif %}>Female</option>
+      </select>
+    </label>
+
+    <label>Chest Pain Type
+      <select name="cp" required>
+        <option value="">Select</option>
+        <option value="1" {% if data.get('cp')|string == '1' %}selected{% endif %}>Typical Angina</option>
+        <option value="2" {% if data.get('cp')|string == '2' %}selected{% endif %}>Atypical Angina</option>
+        <option value="3" {% if data.get('cp')|string == '3' %}selected{% endif %}>Non-anginal Pain</option>
+        <option value="4" {% if data.get('cp')|string == '4' %}selected{% endif %}>Asymptomatic</option>
+      </select>
+    </label>
+
+    <label>Resting Blood Pressure (mm Hg)
+      <input type="number" name="trestbps" min="1" max="300" required value="{{ data.get('trestbps', '') }}">
+    </label>
+
+    <label>Serum Cholesterol (mg/dl)
+      <input type="number" name="chol" min="1" max="1000" required value="{{ data.get('chol', '') }}">
+    </label>
+
+    <label>Fasting Blood Sugar &gt; 120 mg/dl
+      <select name="fbs" required>
+        <option value="">Select</option>
+        <option value="1" {% if data.get('fbs')|string == '1' %}selected{% endif %}>True</option>
+        <option value="0" {% if data.get('fbs')|string == '0' %}selected{% endif %}>False</option>
+      </select>
+    </label>
+
+    <label>Resting ECG
+      <select name="restecg" required>
+        <option value="">Select</option>
+        <option value="0" {% if data.get('restecg')|string == '0' %}selected{% endif %}>Normal</option>
+        <option value="1" {% if data.get('restecg')|string == '1' %}selected{% endif %}>ST-T Abnormality</option>
+        <option value="2" {% if data.get('restecg')|string == '2' %}selected{% endif %}>Left Ventricular Hypertrophy</option>
+      </select>
+    </label>
+
+    <label>Maximum Heart Rate
+      <input type="number" name="thalach" min="1" max="300" required value="{{ data.get('thalach', '') }}">
+    </label>
+
+    <label>Exercise Induced Angina
+      <select name="exang" required>
+        <option value="">Select</option>
+        <option value="1" {% if data.get('exang')|string == '1' %}selected{% endif %}>Yes</option>
+        <option value="0" {% if data.get('exang')|string == '0' %}selected{% endif %}>No</option>
+      </select>
+    </label>
+
+    <label>ST Depression (oldpeak)
+      <input type="number" name="oldpeak" min="0" max="10" step="0.1" required value="{{ data.get('oldpeak', '') }}">
+    </label>
+
+    <label>Slope of Peak ST Segment
+      <select name="slope" required>
+        <option value="">Select</option>
+        <option value="1" {% if data.get('slope')|string == '1' %}selected{% endif %}>Upsloping</option>
+        <option value="2" {% if data.get('slope')|string == '2' %}selected{% endif %}>Flat</option>
+        <option value="3" {% if data.get('slope')|string == '3' %}selected{% endif %}>Downsloping</option>
+      </select>
+    </label>
+
+    <label>Number of Major Vessels (ca)
+      <input type="number" name="ca" min="0" max="4" required value="{{ data.get('ca', '') }}">
+    </label>
+
+    <label>Thal
+      <select name="thal" required>
+        <option value="">Select</option>
+        <option value="3" {% if data.get('thal')|string == '3' %}selected{% endif %}>Normal</option>
+        <option value="6" {% if data.get('thal')|string == '6' %}selected{% endif %}>Fixed Defect</option>
+        <option value="7" {% if data.get('thal')|string == '7' %}selected{% endif %}>Reversible Defect</option>
+      </select>
+    </label>
+
+    <div class="actions full-width">
+      <button type="submit">Predict Risk</button>
+      <a class="button-link secondary" href="{{ url_for('predict_page') }}">Clear Form</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

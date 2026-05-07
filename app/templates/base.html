@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title or "Health Risk Prediction" }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand">Health Risk ML</div>
+      <nav>
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('dashboard_page') }}">Dashboard</a>
+        <a href="{{ url_for('predict_page') }}">Predict</a>
+        <a href="{{ url_for('about_page') }}">About</a>
+        <a href="{{ url_for('model_info_page') }}">Model Info</a>
+        <a href="{{ url_for('history_page') }}">History</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

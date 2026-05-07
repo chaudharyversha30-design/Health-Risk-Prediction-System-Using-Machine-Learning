@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Health Assessment Result</h1>
+  <p class="subtitle">Structured cardiovascular risk assessment generated from your submitted indicators.</p>
+
+  <div class="result-top result-top-spread">
+    <span class="risk-badge {{ risk_level|lower }}">
+      {% if risk_level == "Low" %}🟢{% elif risk_level == "Moderate" %}🟡{% else %}🔴{% endif %}
+      {{ risk_level }} Risk
+    </span>
+  </div>
+
+  <div class="alert {{ 'risk' if result.prediction == 1 else 'safe' }} result-card">
+    <h2 class="result-heading">
+      {% if risk_level == "Low" %}
+      Risk Assessment: Low Cardiovascular Risk
+      {% elif risk_level == "Moderate" %}
+      Risk Assessment: Moderate Cardiovascular Risk
+      {% else %}
+      Risk Assessment: High Cardiovascular Risk
+      {% endif %}
+    </h2>
+    {% if result.confidence is not none %}
+    <p><strong>Confidence Score:</strong> {{ confidence_pct }}%</p>
+    <div class="progress-track" aria-label="Confidence score">
+      <div class="progress-fill {{ risk_level|lower }}" style="width: {{ confidence_pct }}%;"></div>
+    </div>
+    {% endif %}
+    <p>This assessment is generated using a trained machine learning model based on the provided health indicators.</p>
+  </div>
+
+  <h3>🩺 Clinical Insights</h3>
+  <ul class="plain-list">
+    {% for insight in insights %}
+    <li>{{ insight }}</li>
+    {% endfor %}
+  </ul>
+  {% if top_factors %}
+  <h3>📈 Top Contributing Factors</h3>
+  <ul class="plain-list">
+    {% for item in top_factors %}
+    <li><strong>{{ item.feature }}:</strong> {{ item.message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  <h3>❤️ Recommended Actions</h3>
+  <ul class="plain-list">
+    {% for item in recommendations %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+
+  <h3>📊 Input Summary</h3>
+  <div class="summary-grid">
+    {% for label, value in summary_rows %}
+    <div><strong>{{ label }}:</strong> {{ value }}</div>
+    {% endfor %}
+  </div>
+
+  <div class="alert info disclaimer-box">
+    ⚠️ This system is intended for academic and educational purposes only. It does not replace professional medical advice, diagnosis, or treatment.
+  </div>
+
+  <div class="actions">
+    <a class="button-link" href="{{ url_for('predict_page') }}">🔄 New Assessment</a>
+    <a class="button-link secondary" href="{{ url_for('history_page') }}">📄 View Records</a>
+    <form method="post" action="{{ url_for('download_report') }}">
+      <input type="hidden" name="payload_json" value="{{ payload_json }}">
+      <button type="submit">⬇ Download Report</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Model Information</h1>
+  <p class="subtitle">Training summary and selected model details.</p>
+
+  {% if metrics %}
+  <ul class="plain-list">
+    <li><strong>Dataset:</strong> UCI Heart Disease (Cleveland)</li>
+    <li><strong>Number of Features:</strong> {{ feature_count }}</li>
+    <li><strong>Selected Model:</strong> {{ metrics.get('selected_model', 'N/A') }}</li>
+  </ul>
+
+  <h3>Evaluation Metrics</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Accuracy</th>
+        <th>Precision</th>
+        <th>Recall</th>
+        <th>F1-score</th>
+        <th>ROC-AUC</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Logistic Regression</td>
+        <td>{{ '%.4f'|format(metrics.logistic_regression.accuracy) }}</td>
+        <td>{{ '%.4f'|format(metrics.logistic_regression.precision) }}</td>
+        <td>{{ '%.4f'|format(metrics.logistic_regression.recall) }}</td>
+        <td>{{ '%.4f'|format(metrics.logistic_regression.f1_score) }}</td>
+        <td>{{ '%.4f'|format(metrics.logistic_regression.roc_auc) }}</td>
+      </tr>
+      <tr>
+        <td>Random Forest</td>
+        <td>{{ '%.4f'|format(metrics.random_forest.accuracy) }}</td>
+        <td>{{ '%.4f'|format(metrics.random_forest.precision) }}</td>
+        <td>{{ '%.4f'|format(metrics.random_forest.recall) }}</td>
+        <td>{{ '%.4f'|format(metrics.random_forest.f1_score) }}</td>
+        <td>{{ '%.4f'|format(metrics.random_forest.roc_auc) }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Cross-Validation (5-Fold Mean Scores)</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Accuracy</th>
+        <th>Precision</th>
+        <th>Recall</th>
+        <th>F1-score</th>
+        <th>ROC-AUC</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Logistic Regression</td>
+        <td>{{ '%.4f'|format(metrics.cross_validation.logistic_regression.accuracy_mean) }}</td>
+        <td>{{ '%.4f'|format(metrics.cross_validation.logistic_regression.precision_mean) }}</td>
+        <td>{{ '%.4f'|format(metrics.cross_validation.logistic_regression.recall_mean) }}</td>
+        <td>{{ '%.4f'|format(metrics.cross_validation.logistic_regression.f1_mean) }}</td>
+        <td>{{ '%.4f'|format(metrics.cross_validation.logistic_regression.roc_auc_mean) }}</td>
+      </tr>
+      <tr>
+        <td>Random Forest</td>
+        <td>{{ '%.4f'|format(metrics.cross_validation.random_forest.accuracy_mean) }}</td>
+        <td>{{ '%.4f'|format(metrics.cross_validation.random_forest.precision_mean) }}</td>
+        <td>{{ '%.4f'|format(metrics.cross_validation.random_forest.recall_mean) }}</td>
+        <td>{{ '%.4f'|format(metrics.cross_validation.random_forest.f1_mean) }}</td>
+        <td>{{ '%.4f'|format(metrics.cross_validation.random_forest.roc_auc_mean) }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Confusion Matrix Values (Best Model)</h3>
+  {% set best = metrics.selected_model %}
+  <table>
+    <thead>
+      <tr>
+        <th>TN</th>
+        <th>FP</th>
+        <th>FN</th>
+        <th>TP</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ metrics[best].confusion_matrix.tn }}</td>
+        <td>{{ metrics[best].confusion_matrix.fp }}</td>
+        <td>{{ metrics[best].confusion_matrix.fn }}</td>
+        <td>{{ metrics[best].confusion_matrix.tp }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="alert info">
+    <strong>Why recall matters:</strong> {{ metrics.interpretation }}
+  </div>
+
+  <h3>Evaluation Charts</h3>
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h4>Model Metrics Comparison</h4>
+      <img src="{{ url_for('static', filename=images.metrics_chart) }}" alt="Model metrics chart">
+    </div>
+    <div class="chart-card">
+      <h4>Confusion Matrix</h4>
+      <img src="{{ url_for('static', filename=images.confusion_matrix) }}" alt="Confusion matrix">
+    </div>
+    <div class="chart-card">
+      <h4>Feature Importance</h4>
+      <img src="{{ url_for('static', filename=images.feature_importance) }}" alt="Feature importance chart">
+    </div>
+  </div>
+  {% else %}
+  <div class="alert error">Metrics not found. Run <code>python src/train.py</code> first.</div>
+  {% endif %}
+</section>
+{% endblock %}

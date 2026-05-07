@@ -1,0 +1,11 @@
+flask
+numpy
+pandas
+scikit-learn
+joblib
+ucimlrepo
+pytest
+matplotlib
+python-dotenv
+waitress
+reportlab
